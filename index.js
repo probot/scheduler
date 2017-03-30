@@ -26,6 +26,7 @@ module.exports = (robot, options, visit) => {
   robot.on('integration_installation_repositories.added', async event => {
     const installation = event.payload.installation;
 
+    // FIXME: get added repositories from webhook
     eachRepository(installation, repository => {
       if (!intervals[repository.id]) {
         schedule(installation, repository);
