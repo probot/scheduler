@@ -1,0 +1,29 @@
+{
+  "name": "probot-visitor",
+  "version": "0.1.0",
+  "description": "Helper to periodically visit installed integrations and repositories",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo --extend probot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/probot/visitor.git"
+  },
+  "keywords": [
+    "probot"
+  ],
+  "author": "Brandon Keepers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/probot/visitor/issues"
+  },
+  "homepage": "https://github.com/probot/visitor#readme",
+  "dependencies": {
+    "probot": "~0.2.0"
+  },
+  "devDependencies": {
+    "eslint-config-probot": "github:probot/eslint-config-probot",
+    "xo": "^0.18.1"
+  }
+}
