@@ -11,22 +11,47 @@ module.exports = (robot, options, visit) => {
   }
 
   options = Object.assign({}, defaults, options);
+  const intervals = {};
+
+  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
+  robot.on('integration_installation.created', async event => {
+    const installation = event.payload.installation;
+
+    eachRepository(installation, repository => {
+      schedule(installation, repository);
+    });
+  });
+
+  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
+  robot.on('integration_installation_repositories.added', async event => {
+    const installation = event.payload.installation;
+
+    eachRepository(installation, repository => {
+      if (!intervals[repository.id]) {
+        schedule(installation, repository);
+      }
+    });
+  });
 
   setup();
 
   function setup() {
     eachInstallation(installation => {
       eachRepository(installation, repository => {
-        // Wait a random interval to more evenly distribute requests
-        const delay = options.interval * Math.random();
-        setTimeout(() => {
-          // Schedule visit to this repository on an interval
-          setInterval(() => visit(installation, repository), options.interval);
-          // Make the first visit now
-          visit(installation, repository);
-        }, delay);
+        schedule(installation, repository);
       });
     });
+  }
+
+  function schedule(installation, repository) {
+    // Wait a random interval to more evenly distribute requests
+    const delay = options.interval * Math.random();
+    setTimeout(() => {
+      // Schedule visit to this repository on an interval
+      intervals[repository.id] = setInterval(() => visit(installation, repository), options.interval);
+      // Make the first visit now
+      visit(installation, repository);
+    }, delay);
   }
 
   async function eachInstallation(callback) {
@@ -44,4 +69,10 @@ module.exports = (robot, options, visit) => {
       data.repositories.forEach(repository => callback(repository, github));
     }));
   }
+
+  function stop(repository) {
+    clearInterval(intervals[repository.id]);
+  }
+
+  return {stop};
 };
