@@ -9,7 +9,7 @@ module.exports = (robot, options, visit) => {
     visit = options;
     options = {};
   }
-  
+
   options = Object.assign({}, defaults, options);
 
   setup();
@@ -32,16 +32,16 @@ module.exports = (robot, options, visit) => {
   async function eachInstallation(callback) {
     const github = await robot.integration.asIntegration();
 
-    github.integrations.getInstallations({}).then(paginate(github, installations => {
+    return await paginate(github, github.integrations.getInstallations({}), installations => {
       installations.forEach(callback);
-    }));
+    });
   }
 
   async function eachRepository(installation, callback) {
     const github = await robot.auth(installation.id);
 
-    return github.integrations.getInstallationRepositories({}).then(paginate(github, data => {
+    return await paginate(github, github.integrations.getInstallationRepositories({}), data => {
       data.repositories.forEach(repository => callback(repository, github));
-    }));
+    });
   }
 };
