@@ -1,4 +1,5 @@
 const defaults = {
+  delay: true, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000 // 1 hour
 };
 
@@ -43,8 +44,8 @@ module.exports = (robot, options, visit) => {
   }
 
   function schedule(installation, repository) {
-    // Wait a random interval to more evenly distribute requests
-    const delay = options.interval * Math.random();
+    // Wait a random delay to more evenly distribute requests
+    const delay = options.delay ? options.interval * Math.random() : 0;
     setTimeout(() => {
       // Schedule visit to this repository on an interval
       intervals[repository.id] = setInterval(() => visit(installation, repository), options.interval);
