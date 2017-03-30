@@ -1,5 +1,7 @@
 ## Probot: Visitor
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/probot/visitor.svg)](https://greenkeeper.io/)
+
 A helper for [probot](https://github.com/probot/probot) to visiting installed repositories on an interval.
 
 ## Usage
