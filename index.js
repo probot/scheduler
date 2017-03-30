@@ -9,7 +9,7 @@ module.exports = (robot, options, visit) => {
     visit = options;
     options = {};
   }
-  
+
   options = Object.assign({}, defaults, options);
 
   setup();
@@ -17,12 +17,12 @@ module.exports = (robot, options, visit) => {
   function setup() {
     eachInstallation(installation => {
       eachRepository(installation, repository => {
-        // Wait a random interval to more evently distribute requests
+        // Wait a random interval to more evenly distribute requests
         const delay = options.interval * Math.random();
         setTimeout(() => {
           // Schedule visit to this repository on an interval
           setInterval(() => visit(installation, repository), options.interval);
-          // Make the virst visit now
+          // Make the first visit now
           visit(installation, repository);
         }, delay);
       });
