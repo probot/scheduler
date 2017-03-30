@@ -8,8 +8,8 @@ A helper for [probot](https://github.com/probot/probot) to visiting installed re
 const visitor = require('probot-visitor');
 
 module.exports = robot => {
-  visitor(robot, {interval: 60 * 1000}, (installation, repository) => {
-    console.log('Visiting repository', repository);
+  visitor(robot, (installation, repository) => {
+    // this function is called on an interval, which is 1 hr by default;
   });
 };
 ```

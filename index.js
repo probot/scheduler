@@ -5,6 +5,11 @@ const defaults = {
 };
 
 module.exports = (robot, options, visit) => {
+  if (typeof options === 'function') {
+    visit = options;
+    options = {};
+  }
+  
   options = Object.assign({}, defaults, options);
 
   setup();
