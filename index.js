@@ -1,5 +1,3 @@
-const paginate = require('./paginate');
-
 const defaults = {
   interval: 60 * 60 * 1000 // 1 hour
 };
@@ -56,19 +54,19 @@ module.exports = (robot, options, visit) => {
   }
 
   async function eachInstallation(callback) {
-    const github = await robot.integration.asIntegration();
+    const github = await robot.auth();
 
-    github.integrations.getInstallations({}).then(paginate(github, installations => {
+    await github.paginate(github.integrations.getInstallations({}), installations => {
       installations.forEach(callback);
-    }));
+    });
   }
 
   async function eachRepository(installation, callback) {
     const github = await robot.auth(installation.id);
 
-    return github.integrations.getInstallationRepositories({}).then(paginate(github, data => {
-      data.repositories.forEach(repository => callback(repository, github));
-    }));
+    return await github.paginate(github.integrations.getInstallationRepositories({}), data => {
+      data.repositories.forEach(async repository => await callback(repository, github));
+    });
   }
 
   function stop(repository) {
