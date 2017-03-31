@@ -19,8 +19,8 @@
     "url": "https://github.com/probot/visitor/issues"
   },
   "homepage": "https://github.com/probot/visitor#readme",
-  "dependencies": {
-    "probot": "~0.2.0"
+  "peerDependencies": {
+    "probot": "^0.3"
   },
   "devDependencies": {
     "eslint-config-probot": "github:probot/eslint-config-probot",
