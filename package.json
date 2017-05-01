@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/probot/visitor#readme",
   "peerDependencies": {
-    "probot": "^0.3"
+    "probot": "^0.4"
   },
   "devDependencies": {
     "eslint-config-probot": "github:probot/eslint-config-probot",
