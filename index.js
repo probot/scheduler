@@ -48,9 +48,9 @@ module.exports = (robot, options, visit) => {
     const delay = options.delay ? options.interval * Math.random() : 0;
 
     if (delay > 0) {
-      robot.log.info(`Delay by ${delay}ms before starting regular interval of ${options.interval}ms`)
+      robot.log.info(repository, `Delay by ${delay}ms before starting regular interval of ${options.interval}ms`)
     } else {
-      robot.log.info(`Start regular interval of ${options.interval}ms`)
+      robot.log.info(repository, `Start regular interval of ${options.interval}ms`)
     }
 
     setTimeout(() => {
@@ -78,7 +78,7 @@ module.exports = (robot, options, visit) => {
   }
 
   function stop(repository) {
-    robot.log.info(`Cancel interval schedule`);
+    robot.log.info(repository, `Cancel interval schedule`);
 
     clearInterval(intervals[repository.id]);
   }
