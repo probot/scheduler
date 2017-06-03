@@ -62,18 +62,20 @@ module.exports = (robot, options, visit) => {
   }
 
   async function eachInstallation(callback) {
+    robot.log.trace('Fetching installations');
     const github = await robot.auth();
 
-    await github.paginate(github.integrations.getInstallations({}), installations => {
-      installations.forEach(callback);
+    await github.paginate(github.integrations.getInstallations({}), res => {
+      res.data.forEach(callback);
     });
   }
 
   async function eachRepository(installation, callback) {
+    robot.log.trace(installation, 'Fetching repositories for installation');
     const github = await robot.auth(installation.id);
 
-    return await github.paginate(github.integrations.getInstallationRepositories({}), data => {
-      data.repositories.forEach(async repository => await callback(repository, github));
+    return await github.paginate(github.integrations.getInstallationRepositories({}), res => {
+      res.data.repositories.forEach(async repository => await callback(repository, github));
     });
   }
 
