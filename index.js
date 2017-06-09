@@ -1,5 +1,5 @@
 const defaults = {
-  delay: true, // Should the first run be put on a random delay?
+  delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000 // 1 hour
 };
 
