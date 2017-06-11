@@ -1,14 +1,14 @@
-## Probot: Visitor
+## Probot: Scheduler
 
-A helper for [probot](https://github.com/probot/probot) to visiting installed repositories on an interval.
+A helper for [probot](https://github.com/probot/probot) to trigger events on a periodic schedule.
 
 ## Usage
 
 ```js
-const visitor = require('probot-visitor');
+const scheduler = require('probot-scheduler');
 
 module.exports = robot => {
-  visitor(robot, (installation, repository) => {
+  scheduler(robot, (installation, repository) => {
     // this function is called on an interval, which is 1 hr by default;
   });
 };
