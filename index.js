@@ -43,6 +43,11 @@ module.exports = (robot, options, visit) => {
     });
   }
 
+  // Trigger the event
+  function trigger(event) {
+    robot.webhook.emit(event.event, event);
+  }
+
   function schedule(installation, repository) {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0;
@@ -50,10 +55,20 @@ module.exports = (robot, options, visit) => {
     robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
 
     setTimeout(() => {
-      // Schedule visit to this repository on an interval
-      intervals[repository.id] = setInterval(() => visit(installation, repository), options.interval);
-      // Make the first visit now
-      visit(installation, repository);
+      const event = {
+        event: 'schedule',
+        payload: {
+          action: 'repository',
+          installation: installation,
+          repository: repository
+        }
+      }
+
+      // Trigger events on this repository on an interval
+      intervals[repository.id] = setInterval(() => trigger(event) }, options.interval);
+
+      // Trigger the first event now
+      trigger(event);
     }, delay);
   }
 
