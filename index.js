@@ -3,13 +3,8 @@ const defaults = {
   interval: 60 * 60 * 1000 // 1 hour
 };
 
-module.exports = (robot, options, visit) => {
-  if (typeof options === 'function') {
-    visit = options;
-    options = {};
-  }
-
-  options = Object.assign({}, defaults, options);
+module.exports = (robot, options) => {
+  options = Object.assign({}, defaults, options || {});
   const intervals = {};
 
   // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
