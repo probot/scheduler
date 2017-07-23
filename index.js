@@ -7,8 +7,8 @@ module.exports = (robot, options) => {
   options = Object.assign({}, defaults, options || {});
   const intervals = {};
 
-  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
-  robot.on('integration_installation.created', async event => {
+  // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
+  robot.on('installation.created', async event => {
     const installation = event.payload.installation;
 
     eachRepository(installation, repository => {
@@ -16,8 +16,8 @@ module.exports = (robot, options) => {
     });
   });
 
-  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
-  robot.on('integration_installation_repositories.added', async event => {
+  // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
+  robot.on('installation_repositories.added', async event => {
     const installation = event.payload.installation;
 
     // FIXME: get added repositories from webhook
