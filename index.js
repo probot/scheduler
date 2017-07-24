@@ -47,20 +47,16 @@ module.exports = (robot, options) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0;
 
-    robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
+    robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`);
 
     setTimeout(() => {
       const event = {
         event: 'schedule',
-        payload: {
-          action: 'repository',
-          installation: installation,
-          repository: repository
-        }
-      }
+        payload: {action: 'repository', installation, repository}
+      };
 
       // Trigger events on this repository on an interval
-      intervals[repository.id] = setInterval(() => trigger(event) }, options.interval);
+      intervals[repository.id] = setInterval(() => trigger(event), options.interval);
 
       // Trigger the first event now
       trigger(event);
@@ -80,8 +76,8 @@ module.exports = (robot, options) => {
     robot.log.trace(installation, 'Fetching repositories for installation');
     const github = await robot.auth(installation.id);
 
-    return await github.paginate(github.integrations.getInstallationRepositories({}), res => {
-      res.data.repositories.forEach(async repository => await callback(repository, github));
+    return github.paginate(github.integrations.getInstallationRepositories({}), res => {
+      res.data.repositories.forEach(async repository => callback(repository, github));
     });
   }
 
