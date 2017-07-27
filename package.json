@@ -1,6 +1,6 @@
 {
   "name": "probot-scheduler",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Helper to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
