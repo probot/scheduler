@@ -1,14 +1,14 @@
 {
-  "name": "probot-visitor",
-  "version": "0.2.0",
-  "description": "Helper to periodically visit installed integrations and repositories",
+  "name": "probot-scheduler",
+  "version": "1.0.0",
+  "description": "Helper to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
     "test": "xo --extend probot"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/probot/visitor.git"
+    "url": "git+https://github.com/probot/scheduler.git"
   },
   "keywords": [
     "probot"
@@ -16,14 +16,15 @@
   "author": "Brandon Keepers",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/probot/visitor/issues"
+    "url": "https://github.com/probot/scheduler/issues"
   },
-  "homepage": "https://github.com/probot/visitor#readme",
+  "homepage": "https://github.com/probot/scheduler#readme",
   "peerDependencies": {
-    "probot": ">=0.6"
+    "probot": ">=0.7.4"
   },
   "devDependencies": {
     "eslint-config-probot": "github:probot/eslint-config-probot",
     "xo": "^0.18.1"
-  }
+  },
+  "dependencies": {}
 }

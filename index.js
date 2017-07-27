@@ -3,17 +3,12 @@ const defaults = {
   interval: 60 * 60 * 1000 // 1 hour
 };
 
-module.exports = (robot, options, visit) => {
-  if (typeof options === 'function') {
-    visit = options;
-    options = {};
-  }
-
-  options = Object.assign({}, defaults, options);
+module.exports = (robot, options) => {
+  options = Object.assign({}, defaults, options || {});
   const intervals = {};
 
-  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
-  robot.on('integration_installation.created', async event => {
+  // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
+  robot.on('installation.created', async event => {
     const installation = event.payload.installation;
 
     eachRepository(installation, repository => {
@@ -21,8 +16,8 @@ module.exports = (robot, options, visit) => {
     });
   });
 
-  // https://developer.github.com/early-access/integrations/webhooks/#integrationinstallationrepositoriesevent
-  robot.on('integration_installation_repositories.added', async event => {
+  // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
+  robot.on('installation_repositories.added', async event => {
     const installation = event.payload.installation;
 
     // FIXME: get added repositories from webhook
@@ -47,13 +42,19 @@ module.exports = (robot, options, visit) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0;
 
-    robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
+    robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`);
 
     setTimeout(() => {
-      // Schedule visit to this repository on an interval
-      intervals[repository.id] = setInterval(() => visit(installation, repository), options.interval);
-      // Make the first visit now
-      visit(installation, repository);
+      const event = {
+        event: 'schedule',
+        payload: {action: 'repository', installation, repository}
+      };
+
+      // Trigger events on this repository on an interval
+      intervals[repository.id] = setInterval(() => robot.receive(event), options.interval);
+
+      // Trigger the first event now
+      robot.receive(event);
     }, delay);
   }
 
@@ -70,8 +71,8 @@ module.exports = (robot, options, visit) => {
     robot.log.trace(installation, 'Fetching repositories for installation');
     const github = await robot.auth(installation.id);
 
-    return await github.paginate(github.integrations.getInstallationRepositories({}), res => {
-      res.data.repositories.forEach(async repository => await callback(repository, github));
+    return github.paginate(github.integrations.getInstallationRepositories({}), res => {
+      res.data.repositories.forEach(async repository => callback(repository, github));
     });
   }
 
