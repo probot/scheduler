@@ -38,11 +38,6 @@ module.exports = (robot, options) => {
     });
   }
 
-  // Trigger the event
-  function trigger(event) {
-    robot.webhook.emit(event.event, event);
-  }
-
   function schedule(installation, repository) {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0;
@@ -56,10 +51,10 @@ module.exports = (robot, options) => {
       };
 
       // Trigger events on this repository on an interval
-      intervals[repository.id] = setInterval(() => trigger(event), options.interval);
+      intervals[repository.id] = setInterval(() => robot.receive(event), options.interval);
 
       // Trigger the first event now
-      trigger(event);
+      robot.receive(event);
     }, delay);
   }
 
