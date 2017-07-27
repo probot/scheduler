@@ -5,11 +5,13 @@ A helper for [probot](https://github.com/probot/probot) to trigger events on a p
 ## Usage
 
 ```js
-const scheduler = require('probot-scheduler');
+const createScheduler = require('probot-scheduler');
 
 module.exports = robot => {
-  scheduler(robot, (installation, repository) => {
-    // this function is called on an interval, which is 1 hr by default;
+  scheduler = createScheduler(robot);
+
+  robot.on('schedule.repository', context => {
+    // this event is triggered on an interval, which is 1 hr by default;
   });
 };
 ```
