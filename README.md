@@ -15,13 +15,3 @@ module.exports = robot => {
   });
 };
 ```
-
-## TODO:
-
-- [x] Get it working
-- [x] Move `paginate.js` into probot core
-- [x] Ability to manually stop visiting a repository (e.g. like when there is not configuration for the plugin)
-- [ ] Stop visiting uninstalled integrations
-    - [ ] and repositories removed from an integration
-- [x] Start visiting newly installed integrations
-    - [x] and repositories added to an existing installation
