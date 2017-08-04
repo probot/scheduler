@@ -26,5 +26,7 @@
     "eslint-config-probot": "github:probot/eslint-config-probot",
     "xo": "^0.18.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "bottleneck": "^1.16.0"
+  }
 }
