@@ -1,3 +1,7 @@
+const Bottleneck = require('bottleneck');
+
+const limiter = new Bottleneck(1, 1000);
+
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000 // 1 hour
@@ -32,7 +36,7 @@ module.exports = (robot, options) => {
 
   function setup() {
     eachInstallation(installation => {
-      eachRepository(installation, repository => {
+      limiter.submit(eachRepository, installation, repository => {
         schedule(installation, repository);
       });
     });
@@ -62,7 +66,8 @@ module.exports = (robot, options) => {
     robot.log.trace('Fetching installations');
     const github = await robot.auth();
 
-    await github.paginate(github.integrations.getInstallations({}), res => {
+    const req = github.integrations.getInstallations({per_page: 100});
+    await github.paginate(req, res => {
       res.data.forEach(callback);
     });
   }
@@ -71,7 +76,8 @@ module.exports = (robot, options) => {
     robot.log.trace(installation, 'Fetching repositories for installation');
     const github = await robot.auth(installation.id);
 
-    return github.paginate(github.integrations.getInstallationRepositories({}), res => {
+    const req = github.integrations.getInstallationRepositories({per_page: 100});
+    return github.paginate(req, res => {
       res.data.repositories.forEach(async repository => callback(repository, github));
     });
   }

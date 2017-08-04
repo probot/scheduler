@@ -1,6 +1,6 @@
 {
   "name": "probot-scheduler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Helper to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
@@ -26,5 +26,7 @@
     "eslint-config-probot": "github:probot/eslint-config-probot",
     "xo": "^0.18.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "bottleneck": "^1.16.0"
+  }
 }
