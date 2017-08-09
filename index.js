@@ -73,7 +73,7 @@ module.exports = (robot, options) => {
   }
 
   async function eachRepository(installation, callback) {
-    robot.log.trace(installation, 'Fetching repositories for installation');
+    robot.log.trace({installation}, 'Fetching repositories for installation');
     const github = await robot.auth(installation.id);
 
     const req = github.apps.getInstallationRepositories({per_page: 100});
