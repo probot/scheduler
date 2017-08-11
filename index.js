@@ -36,7 +36,7 @@ module.exports = (robot, options) => {
 
   function setup() {
     eachInstallation(installation => {
-      limiter.submit(eachRepository, installation, repository => {
+      limiter.schedule(eachRepository, installation, repository => {
         schedule(installation, repository);
       });
     });
