@@ -1,6 +1,6 @@
 const Bottleneck = require('bottleneck');
 
-const limiter = new Bottleneck(1, 1000);
+const limiter = new Bottleneck(1, 0);
 
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
@@ -36,7 +36,7 @@ module.exports = (robot, options) => {
 
   function setup() {
     eachInstallation(installation => {
-      limiter.submit(eachRepository, installation, repository => {
+      limiter.schedule(eachRepository, installation, repository => {
         schedule(installation, repository);
       });
     });
