@@ -1,7 +1,7 @@
 {
   "name": "probot-scheduler",
   "version": "1.0.2",
-  "description": "Helper to trigger events on a periodic schedule",
+  "description": "Probot extension to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
     "test": "xo --extend probot"
