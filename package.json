@@ -1,10 +1,10 @@
 {
   "name": "probot-scheduler",
-  "version": "1.0.1",
-  "description": "Helper to trigger events on a periodic schedule",
+  "version": "1.0.2",
+  "description": "Probot extension to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
-    "test": "xo --extend probot"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -22,11 +22,15 @@
   "peerDependencies": {
     "probot": ">=0.10.0"
   },
-  "devDependencies": {
-    "eslint-config-probot": "github:probot/eslint-config-probot",
-    "xo": "^0.18.1"
+  "standard": {
+    "env": [
+      "mocha"
+    ]
   },
   "dependencies": {
     "bottleneck": "^1.16.0"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
   }
 }

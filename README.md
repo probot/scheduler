@@ -1,6 +1,6 @@
 ## Probot: Scheduler
 
-A helper for [probot](https://github.com/probot/probot) to trigger events on a periodic schedule.
+A [Probot](https://github.com/probot/probot) extension to trigger events on a periodic schedule.
 
 ## Usage
 
