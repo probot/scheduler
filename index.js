@@ -68,7 +68,8 @@ module.exports = (robot, options) => {
 
     const req = github.apps.getInstallations({per_page: 100})
     await github.paginate(req, res => {
-      res.data.forEach(callback)
+      (options.filter ? res.data.filter(inst => options.filter(inst)) : res.data)
+        .forEach(callback);
     })
   }
 
@@ -78,7 +79,9 @@ module.exports = (robot, options) => {
 
     const req = github.apps.getInstallationRepositories({per_page: 100})
     return github.paginate(req, res => {
-      res.data.repositories.forEach(async repository => callback(repository, github))
+      const repos = res.data.repositories;
+      (options.filter ? repos.filter(repo => options.filter(installation, repo)) : repos)
+        .forEach(async repository => callback(repository, github));
     })
   }
 
