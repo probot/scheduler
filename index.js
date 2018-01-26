@@ -1,6 +1,6 @@
 const Bottleneck = require('bottleneck')
 
-const limiter = new Bottleneck(1, 0)
+const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 0 })
 
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
