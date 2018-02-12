@@ -1,6 +1,7 @@
 const Bottleneck = require('bottleneck')
 
 const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 0 })
+const ignoredAccounts = (process.env.IGNORED_ACCOUNTS || '').split(',')
 
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
@@ -32,6 +33,11 @@ module.exports = (robot, options) => {
   }
 
   function setupInstallation (installation) {
+    if (ignoredAccounts.includes(installation.account.login)) {
+      robot.log.debug({installation}, 'Installation is ignored')
+      return
+    }
+
     limiter.schedule(eachRepository, installation, repository => {
       schedule(installation, repository)
     })
