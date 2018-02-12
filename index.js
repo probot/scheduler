@@ -22,33 +22,32 @@ module.exports = (robot, options) => {
 
   // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
   robot.on('installation_repositories.added', async event => {
-    const installation = event.payload.installation
-
-    // FIXME: get added repositories from webhook
-    eachRepository(installation, repository => {
-      if (!intervals[repository.id]) {
-        schedule(installation, repository)
-      }
-    })
+    return setupInstallation(event.payload.installation)
   })
 
   setup()
 
   function setup () {
-    eachInstallation(installation => {
-      limiter.schedule(eachRepository, installation, repository => {
-        schedule(installation, repository)
-      })
+    return eachInstallation(setupInstallation)
+  }
+
+  function setupInstallation (installation) {
+    limiter.schedule(eachRepository, installation, repository => {
+      schedule(installation, repository)
     })
   }
 
   function schedule (installation, repository) {
+    if (intervals[repository.id]) {
+      return
+    }
+
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0
 
     robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
 
-    setTimeout(() => {
+    intervals[repository.id] = setTimeout(() => {
       const event = {
         event: 'schedule',
         payload: {action: 'repository', installation, repository}
