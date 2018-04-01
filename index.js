@@ -4,7 +4,12 @@ const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 0 })
 
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
+  // Set interval duration, default is 1 hour (uncomment to set them as default scheduler.)
   interval: 60 * 60 * 1000 // 1 hour
+  // interval: 60 * 1000 // 1 minute
+  // interval: 24 * 60 * 60 * 1000 // 1 day
+  // interval: 7 * 24 * 60 * 60 * 1000 // 1 week
+  // interval: 30 * 7 * 24 * 60 * 60 * 1000 // 1 month
 }
 
 module.exports = (robot, options) => {
