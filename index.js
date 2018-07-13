@@ -8,12 +8,12 @@ const defaults = {
   interval: 60 * 60 * 1000 // 1 hour
 }
 
-module.exports = (robot, options) => {
+module.exports = (app, options) => {
   options = Object.assign({}, defaults, options || {})
   const intervals = {}
 
   // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
-  robot.on('installation.created', async event => {
+  app.on('installation.created', async event => {
     const installation = event.payload.installation
 
     eachRepository(installation, repository => {
@@ -22,7 +22,7 @@ module.exports = (robot, options) => {
   })
 
   // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
-  robot.on('installation_repositories.added', async event => {
+  app.on('installation_repositories.added', async event => {
     return setupInstallation(event.payload.installation)
   })
 
@@ -34,7 +34,7 @@ module.exports = (robot, options) => {
 
   function setupInstallation (installation) {
     if (ignoredAccounts.includes(installation.account.login.toLowerCase())) {
-      robot.log.debug({installation}, 'Installation is ignored')
+      app.log.debug({installation}, 'Installation is ignored')
       return
     }
 
@@ -51,7 +51,7 @@ module.exports = (robot, options) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0
 
-    robot.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
+    app.log.debug({repository, delay, interval: options.interval}, `Scheduling interval`)
 
     intervals[repository.id] = setTimeout(() => {
       const event = {
@@ -60,16 +60,16 @@ module.exports = (robot, options) => {
       }
 
       // Trigger events on this repository on an interval
-      intervals[repository.id] = setInterval(() => robot.receive(event), options.interval)
+      intervals[repository.id] = setInterval(() => app.receive(event), options.interval)
 
       // Trigger the first event now
-      robot.receive(event)
+      app.receive(event)
     }, delay)
   }
 
   async function eachInstallation (callback) {
-    robot.log.trace('Fetching installations')
-    const github = await robot.auth()
+    app.log.trace('Fetching installations')
+    const github = await app.auth()
 
     const req = github.apps.getInstallations({per_page: 100})
     await github.paginate(req, res => {
@@ -79,8 +79,8 @@ module.exports = (robot, options) => {
   }
 
   async function eachRepository (installation, callback) {
-    robot.log.trace({installation}, 'Fetching repositories for installation')
-    const github = await robot.auth(installation.id)
+    app.log.trace({installation}, 'Fetching repositories for installation')
+    const github = await app.auth(installation.id)
 
     const req = github.apps.getInstallationRepositories({per_page: 100})
     return github.paginate(req, res => {
@@ -91,7 +91,7 @@ module.exports = (robot, options) => {
   }
 
   function stop (repository) {
-    robot.log.debug({repository}, `Canceling interval`)
+    app.log.debug({repository}, `Canceling interval`)
 
     clearInterval(intervals[repository.id])
   }

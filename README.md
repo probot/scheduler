@@ -7,10 +7,10 @@ A [Probot](https://github.com/probot/probot) extension to trigger events on an h
 ```js
 const createScheduler = require('probot-scheduler');
 
-module.exports = robot => {
-  scheduler = createScheduler(robot);
+module.exports = app => {
+  scheduler = createScheduler(app);
 
-  robot.on('schedule.repository', context => {
+  app.on('schedule.repository', context => {
     // this event is triggered on an interval, which is 1 hr by default;
   });
 };
