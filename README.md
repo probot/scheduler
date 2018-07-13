@@ -1,8 +1,14 @@
 ## Probot: Scheduler
 
+[![npm](https://img.shields.io/npm/v/probot-scheduler.svg)](https://www.npmjs.com/package/probot-scheduler)
+
 A [Probot](https://github.com/probot/probot) extension to trigger events on an hourly schedule.
 
 ## Usage
+
+```shell
+$ npm install probot-scheduler
+```
 
 ```js
 const createScheduler = require('probot-scheduler');
