@@ -11,15 +11,14 @@ $ npm install probot-scheduler
 ```
 
 ```js
-const createScheduler = require('probot-scheduler');
+const createScheduler = require('probot-scheduler')
 
-module.exports = robot => {
-  scheduler = createScheduler(robot);
-
+module.exports = (robot) => {
+  createScheduler(robot)
   robot.on('schedule.repository', context => {
-    // this event is triggered on an interval, which is 1 hr by default;
-  });
-};
+    // this event is triggered on an interval, which is 1 hr by default
+  })
+}
 ```
 
 ## Configuration
