@@ -27,23 +27,23 @@ There are a few environment variables that can change the behavior of the schedu
 
 ## Options
 
-You can also configure the default configurations of the `probot-scheduler`. You can do this by utilising the `options` param of the `probot-scheduler`.
-The `options` is a configuration object with two keys, `delay` and `interval`. The default configuration of the object is:
-```js
-const defaults = {
-  delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
-  interval: 60 * 60 * 1000 // 1 hour
-}
-```
-For example, if you want your app to be triggered *once every day* with *delay enabled on first run* by using `probot-scheduler`, you can write:
+There are a few runtime options you can pass that can change the behavior of the scheduler:
+
+* `delay` - when `false`, the schedule will be performed immediately on startup. When `true`, there will be a random delay between 0 and `interval` for each repository to avoid all schedules being performed at the same time. Default: `true` unless the `DISABLE_DELAY` environment variable is set.
+
+* `interval` - the number of milliseconds to schedule each repository. Default: 1 hour (`60 * 60 * 1000`)
+
+For example, if you want your app to be triggered *once every day* with *delay enabled on first run*:
+
 ```js
 const createScheduler = require('probot-scheduler')
 
 module.exports = (robot) => {
   createScheduler(robot, {
-    delay: process.env.DISABLE_DELAY, // delay is enabled on first run
+    delay: !!process.env.DISABLE_DELAY, // delay is enabled on first run
     interval: 24 * 60 * 60 * 1000 // 1 day
-    }) 
+  })
+  
   robot.on('schedule.repository', context => {
     // this event is triggered once every day, with a random delay
   })
