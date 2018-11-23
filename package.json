@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "Probot extension to trigger events on a periodic schedule",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "standard"
   },
