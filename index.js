@@ -55,7 +55,7 @@ module.exports = (robot, options) => {
 
     intervals[repository.id] = setTimeout(() => {
       const event = {
-        event: 'schedule',
+        name: 'schedule',
         payload: {action: 'repository', installation, repository}
       }
 
