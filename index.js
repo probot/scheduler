@@ -71,23 +71,26 @@ module.exports = (robot, options) => {
     robot.log.trace('Fetching installations')
     const github = await robot.auth()
 
-    const req = github.apps.getInstallations({per_page: 100})
-    await github.paginate(req, res => {
-      (options.filter ? res.data.filter(inst => options.filter(inst)) : res.data)
-        .forEach(callback);
-    })
+    for await (const response of github.paginate.iterator(
+      github.apps.listInstallations.endpoint.merge({ per_page: 100 })
+    )) {
+        const installations = options.filter ? response.data.filter(inst => options.filter(inst)) : response.data
+        return installations.forEach(callback)
+      }
   }
 
   async function eachRepository (installation, callback) {
     robot.log.trace({installation}, 'Fetching repositories for installation')
     const github = await robot.auth(installation.id)
 
-    const req = github.apps.getInstallationRepositories({per_page: 100})
-    return github.paginate(req, res => {
-      const repos = res.data.repositories;
-      (options.filter ? repos.filter(repo => options.filter(installation, repo)) : repos)
-        .forEach(async repository => callback(repository, github));
-    })
+    for await (const response of github.paginate.iterator(
+      github.apps.listRepos.endpoint.merge({ per_page: 100 }))
+    ) {
+        const repos = options.filter
+        ? response.data.repositories.filter(repo => options.filter(installation, repo))
+        : response.data.repositories
+        return repos.forEach(repo => callback(repo, github))
+    }
   }
 
   function stop (repository) {
