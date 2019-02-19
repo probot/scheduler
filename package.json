@@ -4,7 +4,7 @@
   "description": "Probot extension to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "jest && standard"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,9 @@
     "bottleneck": "^2.0.1"
   },
   "devDependencies": {
+    "jest": "^24.1.0",
+    "nock": "^10.0.6",
+    "probot": "8.0.0-beta.6",
     "standard": "^10.0.3"
   }
 }
