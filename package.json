@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/probot/scheduler#readme",
   "peerDependencies": {
-    "probot": ">=0.10.0"
+    "probot": ">=8.0.0"
   },
   "standard": {
     "env": [
