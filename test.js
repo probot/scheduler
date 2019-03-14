@@ -5,27 +5,27 @@ const createScheduler = require('./')
 const { Probot } = require('probot')
 
 const payload = require('./fixtures/installation-created.json')
-const pageOfRepositories = require('./fixtures/page-of-repositories.json')
 
 nock.disableNetConnect()
 
-const testApp = (robot) => {
-  createScheduler(robot)
+const testApp = (app) => {
+  createScheduler(app)
 
-  robot.on('schedule.repository', () => {})
+  app.on('schedule.repository', () => {})
 }
 
 describe('Schedules intervals for a repository', () => {
   let probot
+  let app
 
   beforeEach(() => {
     probot = new Probot({})
-    const app = probot.load(testApp)
+    app = probot.load(testApp)
 
     app.app = () => 'test'
   })
 
-  test('gets a page of repositories', async () => {
+  it('gets a page of repositories', async (done) => {
     nock('https://api.github.com')
       .get('/app/installations')
       .query({ per_page: 1 })
@@ -37,7 +37,8 @@ describe('Schedules intervals for a repository', () => {
       .query({ page: 2, per_page: 1 })
       .reply(200, [{ id: 2 }])
       .persist()
-
-    await probot.receive({ name: 'installation', payload })
+    
+    await app.receive({ name: 'installation', payload })
+    await done()
   })
 })
