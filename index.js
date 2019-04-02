@@ -93,11 +93,9 @@ module.exports = (app, options) => {
     app.log.trace({ installation }, 'Fetching repositories for installation')
     const github = await app.auth(installation.id)
 
-    const repositories = (await github.paginate(
+    const repositories = await github.paginate(
       github.apps.listRepos.endpoint.merge({ per_page: 100 })
-    ))
-      .map(page => page.repositories)
-      .flat()
+    )
 
     const filteredRepositories = options.filter
       ? repositories.filter(repo => options.filter(installation, repo))
