@@ -1,10 +1,10 @@
 {
   "name": "probot-scheduler",
-  "version": "1.2.0",
+  "version": "2.0.0-beta.1",
   "description": "Probot extension to trigger events on a periodic schedule",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "jest && standard"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/probot/scheduler#readme",
   "peerDependencies": {
-    "probot": ">=0.10.0"
+    "probot": ">=9.2.0"
   },
   "standard": {
     "env": [
@@ -31,6 +31,9 @@
     "bottleneck": "^2.0.1"
   },
   "devDependencies": {
+    "jest": "^24.5.0",
+    "nock": "^10.0.6",
+    "probot": "^9.2.0",
     "standard": "^10.0.3"
   }
 }
