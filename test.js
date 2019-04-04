@@ -37,7 +37,7 @@ describe('Schedules intervals for a repository', () => {
       .query({ page: 2, per_page: 1 })
       .reply(200, [{ id: 2 }])
       .persist()
-    
+
     await app.receive({ name: 'installation', payload })
     await done()
   })
