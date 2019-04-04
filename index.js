@@ -53,10 +53,7 @@ module.exports = (app, options) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0
 
-    app.log.info(
-      { repository, delay, interval: options.interval },
-      `Scheduling interval`
-    )
+    app.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
 
     intervals[repository.id] = setTimeout(() => {
       const event = {
