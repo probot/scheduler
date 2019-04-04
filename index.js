@@ -1,19 +1,21 @@
 const Bottleneck = require('bottleneck')
 
 const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 0 })
-const ignoredAccounts = (process.env.IGNORED_ACCOUNTS || '').toLowerCase().split(',')
+const ignoredAccounts = (process.env.IGNORED_ACCOUNTS || '')
+  .toLowerCase()
+  .split(',')
 
 const defaults = {
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000 // 1 hour
 }
 
-module.exports = (robot, options) => {
+module.exports = (app, options) => {
   options = Object.assign({}, defaults, options || {})
   const intervals = {}
 
   // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
-  robot.on('installation.created', async event => {
+  app.on('installation.created', async event => {
     const installation = event.payload.installation
 
     eachRepository(installation, repository => {
@@ -22,7 +24,7 @@ module.exports = (robot, options) => {
   })
 
   // https://developer.github.com/v3/activity/events/types/#installationrepositoriesevent
-  robot.on('installation_repositories.added', async event => {
+  app.on('installation_repositories.added', async event => {
     return setupInstallation(event.payload.installation)
   })
 
@@ -34,7 +36,7 @@ module.exports = (robot, options) => {
 
   function setupInstallation (installation) {
     if (ignoredAccounts.includes(installation.account.login.toLowerCase())) {
-      robot.log.debug({ installation }, 'Installation is ignored')
+      app.log.info({ installation }, 'Installation is ignored')
       return
     }
 
@@ -51,7 +53,7 @@ module.exports = (robot, options) => {
     // Wait a random delay to more evenly distribute requests
     const delay = options.delay ? options.interval * Math.random() : 0
 
-    robot.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
+    app.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
 
     intervals[repository.id] = setTimeout(() => {
       const event = {
@@ -60,38 +62,52 @@ module.exports = (robot, options) => {
       }
 
       // Trigger events on this repository on an interval
-      intervals[repository.id] = setInterval(() => robot.receive(event), options.interval)
+      intervals[repository.id] = setInterval(
+        () => app.receive(event),
+        options.interval
+      )
 
       // Trigger the first event now
-      robot.receive(event)
+      app.receive(event)
     }, delay)
   }
 
   async function eachInstallation (callback) {
-    robot.log.trace('Fetching installations')
-    const github = await robot.auth()
+    app.log.trace('Fetching installations')
+    const github = await app.auth()
 
-    const req = github.apps.getInstallations({ per_page: 100 })
-    await github.paginate(req, res => {
-      (options.filter ? res.data.filter(inst => options.filter(inst)) : res.data)
-        .forEach(callback)
-    })
+    const installations = await github.paginate(
+      github.apps.listInstallations.endpoint.merge({ per_page: 100 })
+    )
+
+    const filteredInstallations = options.filter
+      ? installations.filter(inst => options.filter(inst))
+      : installations
+    return filteredInstallations.forEach(callback)
   }
 
   async function eachRepository (installation, callback) {
-    robot.log.trace({ installation }, 'Fetching repositories for installation')
-    const github = await robot.auth(installation.id)
+    app.log.trace({ installation }, 'Fetching repositories for installation')
+    const github = await app.auth(installation.id)
 
-    const req = github.apps.getInstallationRepositories({ per_page: 100 })
-    return github.paginate(req, res => {
-      const repos = res.data.repositories;
-      (options.filter ? repos.filter(repo => options.filter(installation, repo)) : repos)
-        .forEach(async repository => callback(repository, github))
-    })
+    const repositories = await github.paginate(
+      github.apps.listRepos.endpoint.merge({ per_page: 100 }),
+      response => {
+        return response.data.repositories
+      }
+    )
+
+    const filteredRepositories = options.filter
+      ? repositories.filter(repo => options.filter(installation, repo))
+      : repositories
+
+    return filteredRepositories.forEach(async repository =>
+      callback(repository, github)
+    )
   }
 
   function stop (repository) {
-    robot.log.debug({ repository }, `Canceling interval`)
+    app.log.info({ repository }, `Canceling interval`)
 
     clearInterval(intervals[repository.id])
   }
