@@ -93,7 +93,7 @@ module.exports = (app, options) => {
     const repositories = await github.paginate(
       github.apps.listRepos.endpoint.merge({ per_page: 100 }),
       response => {
-        return response.data.repositories
+        return response.data
       }
     )
 
