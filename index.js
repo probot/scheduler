@@ -77,7 +77,7 @@ module.exports = (app, options) => {
     const github = await app.auth()
 
     const installations = await github.paginate(
-      github.apps.listInstallations.endpoint.merge({ per_page: 100 })
+      github.apps.listInstallations({ per_page: 100 })
     )
 
     const filteredInstallations = options.filter
@@ -91,7 +91,7 @@ module.exports = (app, options) => {
     const github = await app.auth(installation.id)
 
     const repositories = await github.paginate(
-      github.apps.listRepos.endpoint.merge({ per_page: 100 }),
+      github.apps.listRepos({ per_page: 100 }),
       response => {
         return response.data.repositories
       }
