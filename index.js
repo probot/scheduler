@@ -77,7 +77,8 @@ module.exports = (app, options) => {
     const github = await app.auth()
 
     const installations = await github.paginate(
-      github.apps.listInstallations({ per_page: 100 })
+      github.apps.listInstallations({ per_page: 100 }),
+      response => response.data
     )
 
     const filteredInstallations = options.filter
