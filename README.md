@@ -38,6 +38,8 @@ There are a few runtime options you can pass that can change the behavior of the
 
 * `interval` - the number of milliseconds to schedule each repository. Default: 1 hour (`60 * 60 * 1000`)
 
+* `name` - the name of the action to be triggered by the scheduler instance. Default: `repository`
+
 For example, if you want your app to be triggered *once every day* with *delay enabled on first run*:
 
 ```js
@@ -51,6 +53,34 @@ module.exports = (robot) => {
   
   robot.on('schedule.repository', context => {
     // this event is triggered once every day, with a random delay
+  })
+}
+```
+
+Add a second hourly schedule.
+
+```js
+const createScheduler = require('probot-scheduler')
+
+module.exports = (robot) => {
+  createScheduler(robot, {
+    name: 'daily',
+    delay: !!process.env.DISABLE_DELAY, // delay is enabled on first run
+    interval: 24 * 60 * 60 * 1000 // 1 day
+  })
+
+  createScheduler(robot, {
+    name: 'hourly',
+    delay: !!process.env.DISABLE_DELAY, // delay is enabled on first run
+    interval: 60 * 60 * 1000 // 1 hour
+  })
+
+  robot.on('schedule.daily', context => {
+    // this event is triggered once every day, with a random delay
+  })
+
+  robot.on('schedule.hourly', context => {
+    // this event is triggered once every hour, with a random delay
   })
 }
 ```

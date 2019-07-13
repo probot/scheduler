@@ -6,6 +6,7 @@ const ignoredAccounts = (process.env.IGNORED_ACCOUNTS || '')
   .split(',')
 
 const defaults = {
+  name: 'schedule',
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000 // 1 hour
 }
@@ -58,7 +59,7 @@ module.exports = (app, options) => {
     intervals[repository.id] = setTimeout(() => {
       const event = {
         name: 'schedule',
-        payload: { action: 'repository', installation, repository }
+        payload: { action: options.name, installation, repository }
       }
 
       // Trigger events on this repository on an interval
