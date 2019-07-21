@@ -8,7 +8,8 @@ const ignoredAccounts = (process.env.IGNORED_ACCOUNTS || '')
 const defaults = {
   name: 'schedule',
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
-  interval: 60 * 60 * 1000 // 1 hour
+  interval: 60 * 60 * 1000, // 1 hour
+  runOnce: false
 }
 
 module.exports = (app, options) => {
@@ -62,11 +63,13 @@ module.exports = (app, options) => {
         payload: { action: options.name, installation, repository }
       }
 
-      // Trigger events on this repository on an interval
-      intervals[repository.id] = setInterval(
-        () => app.receive(event),
-        options.interval
-      )
+      if (!options.runOnce) {
+        // Trigger events on this repository on an interval
+        intervals[repository.id] = setInterval(
+          () => app.receive(event),
+          options.interval
+        )
+      }
 
       // Trigger the first event now
       app.receive(event)

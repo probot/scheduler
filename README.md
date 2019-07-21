@@ -40,6 +40,8 @@ There are a few runtime options you can pass that can change the behavior of the
 
 * `name` - the name of the action to be triggered by the scheduler instance. Default: `repository`
 
+* `runOnce` - when `true`, the schedule will only be performed once. Default: `false`
+
 For example, if you want your app to be triggered *once every day* with *delay enabled on first run*:
 
 ```js
@@ -81,6 +83,23 @@ module.exports = (robot) => {
 
   robot.on('schedule.hourly', context => {
     // this event is triggered once every hour, with a random delay
+  })
+}
+```
+
+Run the schedule once immediately on startup.
+
+```js
+const createScheduler = require('probot-scheduler')
+
+module.exports = (robot) => {
+  createScheduler(robot, {
+    delay: false, // run immediately on startup
+    runOnce: true, // run only once
+  })
+  
+  robot.on('schedule.repository', context => {
+    // this event is triggered once and only once on startup
   })
 }
 ```
