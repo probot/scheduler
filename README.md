@@ -42,6 +42,8 @@ There are a few runtime options you can pass that can change the behavior of the
 
 * `runOnce` - when `true`, the schedule will only be performed once. Default: `false`
 
+* `repos` - an array of full repository names that the schedule is performed for. Default: `[]`
+
 For example, if you want your app to be triggered *once every day* with *delay enabled on first run*:
 
 ```js
@@ -100,6 +102,25 @@ module.exports = (robot) => {
   
   robot.on('schedule.repository', context => {
     // this event is triggered once and only once on startup
+  })
+}
+```
+
+Run the schedule only for a particular repo.
+
+```js
+const createScheduler = require('probot-scheduler')
+
+module.exports = (robot) => {
+  createScheduler(robot, {
+    delay: !!process.env.DISABLE_DELAY, // delay is enabled on first run
+    interval: 24 * 60 * 60 * 1000, // 1 day
+    repos: [ 'octocat/Hello-World' ]
+  })
+  
+  robot.on('schedule.repository', context => {
+    // this event is triggered once every day, with a random delay, but
+    // only for the specified repository
   })
 }
 ```

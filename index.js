@@ -9,7 +9,8 @@ const defaults = {
   name: 'schedule',
   delay: !process.env.DISABLE_DELAY, // Should the first run be put on a random delay?
   interval: 60 * 60 * 1000, // 1 hour
-  runOnce: false
+  runOnce: false,
+  repos: []
 }
 
 module.exports = (app, options) => {
@@ -52,28 +53,31 @@ module.exports = (app, options) => {
       return
     }
 
-    // Wait a random delay to more evenly distribute requests
-    const delay = options.delay ? options.interval * Math.random() : 0
+    // filter the repositories that the schedule will be triggered for
+    if (options.repos.length === 0 || options.repos.includes(repository.full_name)) {
+      // Wait a random delay to more evenly distribute requests
+      const delay = options.delay ? options.interval * Math.random() : 0
 
-    app.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
+      app.log.debug({ repository, delay, interval: options.interval }, `Scheduling interval`)
 
-    intervals[repository.id] = setTimeout(() => {
-      const event = {
-        name: 'schedule',
-        payload: { action: options.name, installation, repository }
-      }
+      intervals[repository.id] = setTimeout(() => {
+        const event = {
+          name: 'schedule',
+          payload: { action: options.name, installation, repository }
+        }
 
-      if (!options.runOnce) {
-        // Trigger events on this repository on an interval
-        intervals[repository.id] = setInterval(
-          () => app.receive(event),
-          options.interval
-        )
-      }
+        if (!options.runOnce) {
+          // Trigger events on this repository on an interval
+          intervals[repository.id] = setInterval(
+            () => app.receive(event),
+            options.interval
+          )
+        }
 
-      // Trigger the first event now
-      app.receive(event)
-    }, delay)
+        // Trigger the first event now
+        app.receive(event)
+      }, delay)
+    }
   }
 
   async function eachInstallation (callback) {
