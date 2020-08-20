@@ -1,3 +1,9 @@
+# ⚠️ This project is archived
+
+We recommend you use GitHub Actions with the [`schedule`](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events) trigger instead, it's a much more reliably solution to the same problem.
+
+You can authenticate as your GitHub app when running code in a GitHub Action using the [`@octokit/auth-app`](https://github.com/octokit/auth-app.js/) authentication strategy.
+
 ## Probot: Scheduler
 
 [![npm](https://img.shields.io/npm/v/probot-scheduler.svg)](https://www.npmjs.com/package/probot-scheduler)
